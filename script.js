@@ -71,6 +71,21 @@ userInput.addEventListener('keypress', (e) => {
         e.preventDefault(); // prevents Enter from making a new line
         sendMessage();      // calls your async sendMessage function
     }
+    // Attach events AFTER the elements exist
+const userInput = document.getElementById('userInput');
+const sendBtn = document.getElementById('sendBtn');
+const chatBox = document.getElementById('chatBox');
+
+// Send button click
+sendBtn.addEventListener('click', sendMessage);
+
+// Press Enter to send, Shift+Enter for newline
+userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault(); // stops Enter from adding a newline
+        sendMessage();      // calls your AI function
+    }
+});
 });
     }
 });
