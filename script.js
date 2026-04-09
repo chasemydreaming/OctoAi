@@ -62,5 +62,15 @@ userInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         sendMessage();
+        // Send button click
+sendBtn.addEventListener('click', sendMessage);
+
+// Press Enter to send, Shift+Enter for newline
+userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault(); // prevents Enter from making a new line
+        sendMessage();      // calls your async sendMessage function
+    }
+});
     }
 });
