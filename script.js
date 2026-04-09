@@ -1,33 +1,54 @@
-// Assuming this is the new content to fix issues and enhance the script.
+const userInput = document.getElementById('userInput');
+const sendBtn = document.getElementById('sendBtn');
+const chatBox = document.getElementById('chatBox');
 
-document.getElementById('sendButton').addEventListener('click', function() {
-    const userInput = document.getElementById('userInput').value;
-    if (userInput) {
-        // Display user message
-        displayMessage(userInput, 'user');
-        document.getElementById('userInput').value = '';
+// Sample AI responses
+const responses = [
+    "That's interesting! Tell me more.",
+    "I understand. How can I assist you further?",
+    "Great question! I'm here to help.",
+    "I see what you mean. What else would you like to know?",
+    "Thanks for sharing! Is there anything else?",
+    "That's a good point. Let me think about that...",
+    "Absolutely! I'm happy to help with that.",
+    "Interesting perspective. Tell me more about it.",
+    "I appreciate that question!",
+    "That's a wonderful idea!"
+];
 
-        // Simulate an API call to get chatbot response
-        // (you would replace this with your actual call)
-        simulateChatbotResponse(userInput).then(response => {
-            displayMessage(response, 'chatbot');
-        });
-    }
+function sendMessage() {
+    const message = userInput.value.trim();
+    
+    if (message === '') return;
+    
+    // Display user message
+    addMessage(message, 'user');
+    userInput.value = '';
+    
+    // Simulate bot thinking
+    setTimeout(() => {
+        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+        addMessage(randomResponse, 'bot');
+    }, 500);
+}
+
+function addMessage(text, sender) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}-message`;
+    
+    const messageText = document.createElement('p');
+    messageText.textContent = text;
+    
+    messageDiv.appendChild(messageText);
+    chatBox.appendChild(messageDiv);
+    
+    // Auto-scroll to bottom
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Event listeners
+sendBtn.addEventListener('click', sendMessage);
+userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
 });
-
-function displayMessage(message, sender) {
-    const chatWindow = document.getElementById('chatWindow');
-    const messageElement = document.createElement('div');
-    messageElement.classList.add(sender === 'user' ? 'user-message' : 'chatbot-message');
-    messageElement.textContent = message;
-    chatWindow.appendChild(messageElement);
-}
-
-function simulateChatbotResponse(userInput) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            // Here you would typically have your logic to determine response
-            resolve('Chatbot response for: ' + userInput);
-        }, 1000);
-    });
-}
+ 
