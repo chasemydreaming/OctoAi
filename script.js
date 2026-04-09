@@ -1,53 +1,31 @@
-const userInput = document.getElementById('userInput');
-const sendBtn = document.getElementById('sendBtn');
-const chatBox = document.getElementById('chatBox');
-
-// Sample AI responses
-const responses = [
-    "That's interesting! Tell me more.",
-    "I understand. How can I assist you further?",
-    "Great question! I'm here to help.",
-    "I see what you mean. What else would you like to know?",
-    "Thanks for sharing! Is there anything else?",
-    "That's a good point. Let me think about that...",
-    "Absolutely! I'm happy to help with that.",
-    "Interesting perspective. Tell me more about it.",
-    "I appreciate that question!",
-    "That's a wonderful idea!"
-];
-
-function sendMessage() {
+async function sendMessage() {
     const message = userInput.value.trim();
-    
-    if (message === '') return;
-    
-    // Display user message
+    if (!message) return;
+
     addMessage(message, 'user');
     userInput.value = '';
-    
-    // Simulate bot thinking
-    setTimeout(() => {
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        addMessage(randomResponse, 'bot');
-    }, 500);
-}
 
-function addMessage(text, sender) {
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${sender}-message`;
-    
-    const messageText = document.createElement('p');
-    messageText.textContent = text;
-    
-    messageDiv.appendChild(messageText);
-    chatBox.appendChild(messageDiv);
-    
-    // Auto-scroll to bottom
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
+    addMessage("AI is thinking...", 'bot'); // optional typing indicator
 
-// Event listeners
-sendBtn.addEventListener('click', sendMessage);
-userInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendMessage();
-});
+    try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer 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'
+            },
+            body: JSON.stringify({
+                model: "gpt-4", 
+                messages: [{role: "user", content: message}]
+            })
+        });
+
+        const data = await response.json();
+        const aiText = data.choices[0].message.content;
+
+        addMessage(aiText, 'bot');
+    } catch (err) {
+        addMessage("Oops! Something went wrong.", 'bot');
+        console.error(err);
+    }
+}
